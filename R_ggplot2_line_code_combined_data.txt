@@ -1,0 +1,45 @@
+library(ggplot2)
+
+#set the directory
+getwd()
+setwd('/agan/postdoc in the Liberles lab/Results/SEAP assay/Collaboration with Mary/20150402,SEAP on female FMO3 KO urine/figures')
+
+#load csv file
+SEAP_FMO3 <- read.csv(file.choose(), header=T, sep=',')
+#create bar figure
+pdf( "SEAP_FMO3_female.pdf", width=4.5, height=4, useDingbats=FALSE )
+ggplot(data=SEAP_FMO3, aes(x=factor(urine.dilution), y=SEAP.activity,
+                          colour=factor(genotype), 
+                          group=factor(genotype))) +
+  geom_line() +
+  geom_point(aes(colour=factor(genotype),shape=factor(genotype))) +
+  scale_x_discrete(limits=c('no ligand',"dilute 300000","dilute 100000",
+                            "dilute 30000","dilute 10000","dilute 3000",
+                            "dilute 1000")) +
+  scale_shape_manual(breaks=c("FMO3 KO-1", "FMO3 KO-2","FMO3 KO-3", "FMO3 KO-4",
+                              "FMO3 WT-1","FMO3 WT-2","FMO3 WT-3","FMO3 WT-4",
+                              "FMO3 WT-5"),
+                    values=c(15,16,17,18,19,20,0,1,2)) +
+  scale_colour_manual(breaks=c("FMO3 KO-1", "FMO3 KO-2","FMO3 KO-3", "FMO3 KO-4",
+                              "FMO3 WT-1","FMO3 WT-2","FMO3 WT-3","FMO3 WT-4",
+                              "FMO3 WT-5"),
+                     values=c("blue","cyan","green","navy","red","tomato","violet",
+                              "magenta","orange")) +
+  #labels x and y axis, use expression to get Greek symbols
+  xlab("Urine dilution") + ylab("SEAP activity") + 
+  #label the title
+  ggtitle("FMO3 knockout mice urine on mTAAR5") +
+  #set y range,like ylim function,make y axis intersects x axis at 0
+  scale_y_continuous(limits=c(0,6000000),expand=c(0,0)) +
+  #remove box sorrounding the figure legend
+  theme_bw() + 
+  theme(legend.key = element_rect(colour="white", fill='white')) +
+  #rotate the x axis to 45 degree,not just angle= but also hjust=1 to 
+  #ensure that end of the label is placed under the tick mark. 
+  #Also theme_bw() should be placed before theme specification of axis texts.
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  #remove grid lines and border lines in background
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) 
+
+dev.off()
